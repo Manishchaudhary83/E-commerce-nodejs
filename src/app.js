@@ -5,7 +5,9 @@ const cartRoutes = require("./routes/cart.routes")
 const orderRoutes = require("./routes/order.routes")
 
 const app = express()
+app.use(express.urlencoded({ extended: true }))
 
+//prefix
 app.use(express.json())
 
 app.use("/api/auth", authRoutes)
