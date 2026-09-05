@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  mongodb_ecom:
+    image: mongo:latest
+    container_name: ecom_mongodb
+    ports:
+      - "27001:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  ecom_backend:
+    build: .
+    container_name: ecomApp
+    restart: unless-stopped
+    ports:
+      - "3007:3007"
+    env_file:
+      - "./.env"
+    volumes:
+      - ./.env:/src/.env
+    depends_on:
+      - mongodb_ecom
+    # volumes:
+    #   - ./uploads:/uploads
+
+volumes:
+  mongo_data:
+ 
