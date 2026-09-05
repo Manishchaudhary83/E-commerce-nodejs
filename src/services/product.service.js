@@ -63,7 +63,89 @@ module.exports =
                 return reject(error)
             }
         })
-    }
+    },
+
+
+    //update
+updateProduct: (productId, userId, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            const product = await productModel.findById(productId);
+
+            if (!product) {
+                return reject({
+                    message: "Product not found",
+                    status: 404
+                });
+            }
+            if (product.sellerId.toString() !== userId.toString()) {
+                return reject({
+                    message: "You can update only your own product",
+                    status: 403
+                });
+            }
+
+            // Update product
+            const updatedProduct = await productModel.findByIdAndUpdate(
+                productId,
+                data,
+                {
+                    new: true,
+                    runValidators: true
+                }
+            );
+
+            return resolve({
+                message: "Product updated successfully",
+                status: 200,
+                product: updatedProduct
+            });
+
+        } catch (error) {
+            return reject(error);
+        }
+    });
+},
+
+//delete product
+deleteProduct: (productId, userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            const product = await productModel.findById(productId);
+
+            if (!product) {
+                return reject({
+                    message: "Product not found",
+                    status: 404
+                });
+            }
+
+            if (product.sellerId.toString() !== userId.toString()) {
+                return reject({
+                    message: "You can delete only your own product",
+                    status: 403
+                });
+            }
+
+            // Delete product
+            await productModel.findByIdAndDelete(productId);
+
+            return resolve({
+                message: "Product deleted successfully",
+                status: 200
+            });
+
+        } catch (error) {
+            return reject(error);
+        }
+    });
+},
+
+
+
+
 
 
 }
